@@ -1,14 +1,217 @@
 ---
 title: "Gov 50 Final Project"
-author: "Your Name Here"
+author: "Jonathan Haileselassie"
 description: "My final project"
 output:
   distill::distill_article:
     self_contained: false
 ---
 
+## Introduction
+
+The central focus of this study is to address the compelling research question: How has the GOP's, also know as the Republic Party, voteshares of the American people shifted from the years 1992 to 2000. This topic peaks my interest because it is related to something I find fascinating: the polarization of politics in the United States, especially in recent years. I hope this project will allow me to better understand how media, more specifcally, the news, can affect the political leanings of citizens.
+
+ I will be focusing on the relationship between the amount of FoxNews subscriptions in each town in the year 2000 and the GOP voteshare in the year 2000. Additionally, I will be seeing if there is a correlation between the income levels in 1990 and the GOP voteshare in the year 2000. My hypothesis is that if the number of FoxNews subscriptions goes up in a given town, the GOP voteshare should follow suit and increase as well. Additionally, I think the income level of a town in 1990 will correlate with the GOP voteshare in 2000. I think the wealthier a town is, the more likely that the GOP will have a higher voteshare in the year 2000. It is important to understand the correlations between these factors. If we are to navigate our current political system, we must know how it has come to be so that we can better understand how to push it in the right direction.    
+
+## Data
+
+To provide background into the dataset, it includes data on 15 state in the United States. It lists several towns in each state as well as college attainment, the percent of males, the percents of Black people, the percent of hispanic people, the income level, the amount of FoxNews subscriptions, and the GOP voteshare of each town. While my research is technically cross-sectional as it doens't follow the same individuals over time, it does include observations of the same place over the span of a decade: in 1992, 1996, and then 2000 as well.
+
+```{r include=FALSE}
+#Options
+options(
+  scipen = 9,
+  width = 100)
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center")
+library(tidyverse)
+library(ggplot2)
+library(broom)
+
+foxnews <- read.csv("foxnews.csv")
+foxnews <- na.omit(foxnews)
+```
 
 
-## Project thoughts
 
-I am interested in exploring data related to...
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(broom)
+foxnews <- read.csv("foxnews.csv")
+foxnews <- na.omit(foxnews)
+
+ggplot(foxnews, aes(x = gopvoteshare2000, y = subrf2000)) +
+  geom_point(color = "steelblue1") +
+  labs(
+    x = "GOP Voteshares",
+    y = "FoxNews Subscriptions",
+    title = "FoxNews Subscriptions and GOP Voteshare in 2000"
+) + 
+  geom_smooth(method = "lm", se = FALSE, color = "indianred1", linewidth = 2)
+```
+This scatter plot above showcases the relationship between FoxNews subscriptions and GOP voteshares in the year 2000. As you can tell from the bottom of the scatter plot, there is a big concentration of towns without FoxNews subscriptions. I was initially surprised as well but it's not out of the norm considering that in the year 2000, FoxNews has just started to get on the networks. A lot of homes in the United States didn't know it well enough to purchase a subscription.
+
+However, this doesn't take away from what the scatter plot and the line of best fit is telling us. Based on the scatter plot, there is a positive corelation between FoxNews subscription purchases in a town and the GOP voteshares. As more and more subscriptions are bought, the GOP's voteshares increase as well. However, using the eye test, the correlation does not seem to be strong. We will be taking a closer look at the relationsphip between these two factors in the results section.
+
+
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(broom)
+foxnews <- read.csv("foxnews.csv")
+foxnews <- na.omit(foxnews)
+
+ggplot(foxnews, aes(x = logincome1990, y = gopvoteshare2000)) +
+  geom_point(color = "steelblue1") +
+  labs(
+    x = "Income",
+    y = "GOP Voteshare",
+    title = "Relationship Between Income and GOP Voteshare"
+) + 
+  geom_smooth(method = "lm", se = FALSE, color = "indianred1", linewidth = 2)
+
+```
+We will also be looking into the relationship between income and GOP voteshare. The correlation between income recorded in 1990 and the GOP voteshare in 2000 showcases a different correlation. In the presented scatter plot depicting the relationship between income and GOP voteshare, the negative slope indicates that as income increases, GOP voteshare tends to decrease. The majority of data points clustering towards the center further supports this trend, emphasizing the consistency of the negative relationship. Based on the lightly down-ward slopping line of best fit, there seems to be a slight negative correlation. This means that as income increases, the GOP votershare decreases.
+
+
+## Results
+
+To further explore the relationship/correlation between FoxNews subscriptions and GOP voteshares in 2000, we will be looking at a new data visualization and a linear regression table. This will let us know if there exists a correlation, and if so, how strong? 
+
+```{r}
+ggplot(data = foxnews,
+       mapping = aes(x = gopvoteshare2000,
+                     y = subrf2000)) +
+  geom_line(mapping = aes(group = state), color = "grey70") +
+  geom_smooth(method = "loess") +
+  labs(
+    x = "GOP Voteshares",
+    y = "FoxNews Subscriptions",
+    title = "FoxNews Subscriptions and GOP Voteshare in 2000"
+) + 
+  geom_smooth(method = "lm", se = FALSE, color = "indianred1", linewidth = 2)
+```
+The plot above has three colored lines: gray lines representing state-specific trends, a red line representing the overall trend (linear regression line), and a blue line also representing the overall trend, capturing non-linear trends.
+
+Based on above, we can see the relationship between these two factors. The way we know it's a positive trend would be, if, as we follow the red line  from left to right along the x-axis (GOP Voteshares), the y-values (FoxNews Subscriptions) generally increase. This means that, on average, higher GOP voteshares are associated with higher levels of FoxNews subscriptions. On the other hand, if there is no relationship, the points would be scattered without any clear pattern or trend as you move along the x-axis. The smoothed line might be relatively flat, indicating that changes in GOP voteshares are not systematically associated with changes in FoxNews subscriptions.
+
+Taking a look at it, there still seems to be a weak positive correlation. While the line does not climb at a high angle, it is still going up, suggesting that as FoxNews subscritipn goes up, so does GOP votershares. 
+
+
+
+Regression Table: FoxNews Subscriptions and GOP Voteshare in 2000
+
+```{r}
+options(
+  scipen = 9,
+  width = 100)
+
+library(broom)
+
+
+linearregression <- lm(gopvoteshare2000 ~ subrf2000, data = foxnews) |>
+  broom::tidy() |>
+  select(term, est=estimate, se=std.error, pval=p.value)
+
+knitr::kable(linearregression, digits=6, col.names = c("Variable", "Coefficient Estimate", "Standard Error", "P-Value"))
+```
+
+The intercept in the linear regression analysis, represented by the value 0.522624, signifies the estimated GOP voteshare when FoxNews subscriptions (subrf2000) are assumed to be zero. However, interpreting this intercept might be less meaningful in real-world terms, as zero FoxNews subscriptions may not align with the practical context of the data.
+
+The coefficient for FoxNews subscriptions (subrf2000) is 0.061034. This indicates that for every one-unit increase in FoxNews subscriptions, there is an estimated increase of 0.061034 units in GOP voteshare (gopvoteshare2000). The small p-value associated with this coefficient (0.000002) suggests that this effect is statistically significant, providing evidence that the relationship between FoxNews subscriptions and GOP voteshare is unlikely to be due to random chance.
+
+linearregression <- lm(gopvoteshare2000 ~ logincome1990  + subrf2000, data = foxnews) |>
+  broom::tidy() |>
+  select(term, est=estimate, se=std.error, pval=p.value)
+
+
+
+Regression Table: Income and GOP Voteshare in 2000
+
+```{r}
+options(
+  scipen = 9,
+  width = 100)
+
+library(broom)
+
+
+linearregression <- lm(gopvoteshare2000 ~ logincome1990, data = foxnews) |>
+  broom::tidy() |>
+  select(term, est=estimate, se=std.error, pval=p.value)
+
+knitr::kable(linearregression, digits=6, col.names = c("Variable", "Coefficient Estimate", "Standard Error", "P-Value"))
+```
+
+The linear regression results indicate that the intercept is estimated to be 0.541185 with a standard error of 0.004089 and a highly statistically significant p-value of 0.000000. This intercept value represents the predicted GOP voteshare when the income (logincome1990) is zero. However, given that income cannot be zero in a practical sense, the interpretation of the intercept might have limited real-world relevance.
+
+The coefficient estimate for the variable "logincome1990" is -0.016769, indicating a negative relationship between income in 1990 and GOP voteshare in 2000. This coefficient represents the change in the GOP voteshare for a one-unit increase in income. The standard error associated with this estimate is 0.004057, and the p-value is 0.000036, signifying that the relationship is statistically significant. In practical terms, this suggests that higher income in 1990 is associated with a decrease in GOP voteshare in 2000. The small p-value reinforces the confidence in the statistical significance of this negative correlation.
+
+The regression tables support the conclusion that the scatter plots showed, both for the correlation between FoxNews subscriptions and GOP voteshare, as well between Income and GOP voteshare. FoxNews and GOP voteshare have a positive correlation that is statistically significant. While it's still a weak positive correlation, it establsihes that there exists a relatniship between these two factors. Similarly, the regression table supported the negative correlation between Income and GOP voteshare. While also a weak correlation, it was statistically significant.
+
+
+# GOP Voteshare: 1992 to 2000 
+
+While there is a weak correlation between FoxNews and GOP voteshares, something I found intersting was that the GOP had increased their voteshare. The graphs below show the GOP voteshare in 1992 and then the GOP voteshare in 2000. While it is stil strong in 1992, the median is still left of the 50%. On the other hand, when we observe 2000, we see that it has switched sides, with the median now on the right of 50%. There are two types of graphs below that show the change from 1992 to 2000: the histogram which show just the overall GOP voteshare, and the second graphes which show the GOP voteshare in different states.
+
+```{r}
+library(ggplot2)
+library(gapminder)
+
+ggplot(data = foxnews,
+       mapping = aes(x = gopvoteshare1992)) +
+  geom_histogram() +
+  labs(
+    x = "GOP Voteshare % in 1992",
+    title = "GOP Voteshare in 1992"
+)
+```
+
+```{r}
+ggplot(data = foxnews,
+       mapping = aes(x = gopvoteshare2000)) +
+  geom_histogram()+
+  labs(
+    x = "GOP Voteshare % in 2000",
+    title = "GOP Voteshare in 2000"
+)
+```
+
+
+```{r}
+ggplot(data = foxnews,
+       mapping = aes(x = gopvoteshare2000,
+                     fill = state, color = state)) +
+  geom_density(alpha = 0.3)+
+  labs(
+    x = "GOP Voteshare % in 2000",
+    title = "GOP Voteshare in 2000"
+)
+```
+
+```{r}
+ggplot(data = foxnews,
+       mapping = aes(x = gopvoteshare1992,
+                     fill = state, color = state)) +
+  geom_density(alpha = 0.3)+
+  labs(
+    x = "GOP Voteshare % in 1992",
+    title = "GOP Voteshare in 1992"
+)
+```
+
+
+## Conclusion
+
+In conclusion, the results of our analysis offer compelling evidence supporting the hypothesized relationships between FoxNews subscriptions, income, and GOP voteshare in the years 1992 to 2000. The statistically significant positive correlation between FoxNews subscriptions and GOP voteshare, albeit weak, suggests a discernible association. An increase in FoxNews subscriptions is linked to higher GOP voteshare, providing initial insights into the interplay between media consumption and political preferences. Similarly, the negative correlation between income in 1990 and GOP voteshare in 2000 indicates that wealthier towns tend to exhibit lower GOP voteshare, aligning with our hypothesis that income levels may influence political leanings.
+
+However, it is imperative to acknowledge the limitations inherent in this analysis, as they may impact the robustness and generalizability of our findings. The cross-sectional nature of the data introduces challenges in establishing causal relationships, and potential confounding variables could influence observed correlations. The study's temporal limitations emphasize the need to consider changes in media consumption patterns post-2000. The development of social media, the culutural changes that have occured in the United States and more make it hard to say whether these results would hold true today. 
+
+Despite these limitations, our analysis contributes valuable insights into the complex relationships between media exposure, income, and political preferences. The weak yet statistically significant correlations indicate the nuanced nature of these associations, urging caution in drawing definitive causal conclusions. The exploration of the GOP voteshare shift from 1992 to 2000 adds depth to our understanding of political dynamics, offering a nuanced perspective on the evolving political landscape during this critical period. As we move forward, addressing these limitations through longitudinal data, additional control variables, and more sophisticated statistical methods will enhance the depth and reliability of future research in unraveling the intricate dynamics between media consumption, income, and political preferences.
+
